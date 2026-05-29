@@ -17,11 +17,11 @@ Strange particle production is a key observable in ultra-relativistic heavy-ion 
 
 | Particle | Quark Content | Strangeness |
 |----------|--------------|-------------|
-| K⁰ₛ      | (d s̄ − s d̄)/√2 | \|S\| = 1 |
+| K⁰ₛ      | (ds̄ − sd̄)/√2 | \|S\| = 1 |
 | Λ        | uds           | \|S\| = 1 |
 | Ξ⁻       | dss           | \|S\| = 2 |
 
-- Strange quarks are not present in the initial-state nucleons, so strangeness must be **produced dynamically** in the collision.
+- Strange quarks are absent in the initial-state nucleons, so strangeness must be **produced dynamically** in the collision.
 - Multi-strange baryons (Ξ) are particularly sensitive probes of the medium formed in heavy-ion collisions.
 - PYTHIA8 simulations serve as an important **perturbative QCD baseline** against which experimental measurements are benchmarked.
 
@@ -31,35 +31,55 @@ Strange particle production is a key observable in ultra-relativistic heavy-ion 
 
 All histograms were generated using **ROOT** and are provided as standalone `.C` macros that can be run independently without the original simulation code.
 
-### 1. Invariant Mass Peaks
+---
 
-> Reconstructed invariant mass distributions for K⁰ₛ, Λ, and Ξ, showing clear signal peaks above combinatorial background — confirming successful particle identification via their decay topology (V0 and cascade reconstruction).
+### 1. Pseudorapidity (η) Distributions
 
-![Invariant Mass](results/invariant_mass.png)
+> Mean charged particle multiplicity density ⟨dN_ch/dη⟩ as a function of pseudorapidity η
+> for three centrality classes: 0–5% (central), 30–40% (semi-central), and 60–80% (peripheral)
+> Pb-Pb collisions at √s_NN = 5.02 TeV. The characteristic bell-shaped distribution centered
+> at η = 0 and the clear centrality ordering — central collisions producing far more particles
+> than peripheral — are consistent with expected heavy-ion collision dynamics.
+
+![Pseudorapidity Distributions](results/pseudorapidity_distribution.png)
 
 ---
 
-### 2. Transverse Momentum (pT) Spectra
+### 2. Lorentz-Invariant Transverse Momentum (pT) Spectra
 
-> Differential yield dN/dp_T as a function of transverse momentum for K⁰ₛ, Λ, and Ξ. The spectra characterise the transverse dynamics of strange particle production and can be compared to Boltzmann-Gibbs blast-wave fits.
+> Lorentz-invariant transverse momentum spectra (1/2πpT) d²N/dpTdy of K⁰ₛ, Λ+Λ̄, and Ξ⁻+Ξ̄⁺
+> at mid-rapidity |y| < 0.5 in Pb-Pb collisions at √s_NN = 5.02 TeV, for two centrality classes:
+> 0–5% (scaled ×20 for visual separation) and 30–40%. Yields span several orders of magnitude on
+> a logarithmic scale. The strangeness hierarchy K⁰ₛ > Λ > Ξ is clearly visible across all pT,
+> consistent with increasing strange quark content suppressing production rates.
 
-![pT Spectra](results/pt_spectra.png)
-
----
-
-### 3. Rapidity Distributions
-
-> Particle yields as a function of rapidity y, showing the longitudinal production profile of strange hadrons across the detector acceptance. Mid-rapidity (|y| < 0.5) is the primary region of interest, consistent with the ALICE acceptance.
-
-![Rapidity Distributions](results/rapidity_distributions.png)
+![pT Spectra](results/pt_spectra_invariant.png)
 
 ---
 
-### 4. Multiplicity Distributions
+### 3. Mean Transverse Momentum vs Centrality
 
-> Event-by-event charged particle multiplicity distributions, used to characterise collision centrality. Strange particle yields are studied as a function of multiplicity to probe the dependence of strangeness enhancement on event activity.
+> Mean transverse momentum ⟨pT⟩ of K⁰ₛ, Λ+Λ̄, and Ξ⁻+Ξ̄⁺ as a function of collision
+> centrality (0–80%) at mid-rapidity |y| < 0.5 in Pb-Pb collisions at √s_NN = 5.02 TeV.
+> The mass ordering ⟨pT⟩(Ξ) > ⟨pT⟩(Λ) > ⟨pT⟩(K⁰ₛ) is clearly observed across all
+> centralities, consistent with radial flow boosting heavier particles to higher momenta.
+> A mild decrease in ⟨pT⟩ from central to peripheral collisions reflects the reduction
+> of collective radial flow in less central events.
 
-![Multiplicity](results/multiplicity.png)
+![Mean pT vs Centrality](results/mean_pt_vs_centrality.png)
+
+---
+
+### 4. Mean Transverse Momentum vs Particle Mass (Radial Flow Signature)
+
+> Mean transverse momentum ⟨pT⟩ as a function of particle rest mass m for K⁰ₛ, Λ, and Ξ
+> in Pb-Pb collisions at √s_NN = 5.02 TeV. Colored circles show PYTHIA8 simulation results;
+> grey triangles show a reference dataset for comparison. The linear rise of ⟨pT⟩ with
+> particle mass is a direct signature of **collective radial flow** — the hydrodynamic
+> expansion of the fireball imparts a common velocity boost to all particles, with heavier
+> species acquiring proportionally larger momenta.
+
+![Mean pT vs Mass](results/mean_pt_vs_mass_radialflow.png)
 
 ---
 
@@ -73,19 +93,19 @@ All histograms were generated using **ROOT** and are provided as standalone `.C`
 
 ```bash
 # Launch ROOT and run any macro interactively
-root results/invariant_mass.C
+root results/pseudorapidity_distribution.C
 
 # Or run in batch mode (no GUI)
-root -b -q results/invariant_mass.C
+root -b -q results/pseudorapidity_distribution.C
 ```
 
-### All Four Results
+### Run All Four Results
 
 ```bash
-root -b -q results/invariant_mass.C
-root -b -q results/pt_spectra.C
-root -b -q results/rapidity_distributions.C
-root -b -q results/multiplicity.C
+root -b -q results/pseudorapidity_distribution.C
+root -b -q results/pt_spectra_invariant.C
+root -b -q results/mean_pt_vs_centrality.C
+root -b -q results/mean_pt_vs_mass_radialflow.C
 ```
 
 ---
@@ -97,14 +117,14 @@ root -b -q results/multiplicity.C
 ├── README.md
 ├── LICENSE
 └── results/
-    ├── invariant_mass.C
-    ├── invariant_mass.png
-    ├── pt_spectra.C
-    ├── pt_spectra.png
-    ├── rapidity_distributions.C
-    ├── rapidity_distributions.png
-    ├── multiplicity.C
-    └── multiplicity.png
+    ├── pseudorapidity_distribution.C
+    ├── pseudorapidity_distribution.png
+    ├── pt_spectra_invariant.C
+    ├── pt_spectra_invariant.png
+    ├── mean_pt_vs_centrality.C
+    ├── mean_pt_vs_centrality.png
+    ├── mean_pt_vs_mass_radialflow.C
+    └── mean_pt_vs_mass_radialflow.png
 ```
 
 ---
