@@ -1,0 +1,433 @@
+%===============================================================
+% MPhil Presentation: Strange Particle Production in Pb-Pb
+% Theme: Metropolis (modern minimal)
+% Compile with: pdflatex or xelatex
+%===============================================================
+
+\documentclass[10pt, aspectratio=169]{beamer}
+
+%---------------------------------------------------------------
+% Theme
+%---------------------------------------------------------------
+\usetheme{metropolis}
+\usecolortheme{default}
+
+%---------------------------------------------------------------
+% Packages
+%---------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{physics}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{multicol}
+
+%---------------------------------------------------------------
+% Custom Colors (ALICE / CERN inspired)
+%---------------------------------------------------------------
+\definecolor{aliceblue}{RGB}{0, 51, 102}
+\definecolor{alertred}{RGB}{180, 30, 30}
+\definecolor{examplegreen}{RGB}{0, 120, 60}
+
+\setbeamercolor{frametitle}{bg=aliceblue, fg=white}
+\setbeamercolor{progress bar}{fg=aliceblue}
+\setbeamercolor{title separator}{fg=aliceblue}
+\setbeamercolor{alerted text}{fg=alertred}
+\setbeamercolor{example text}{fg=examplegreen}
+
+%---------------------------------------------------------------
+% Title Information
+%---------------------------------------------------------------
+\title{Study of Strange Particle Production\\in Pb-Pb Collisions at $\sqrt{s_\mathrm{NN}} = 5.02$ TeV}
+\subtitle{Using PYTHIA8 Monte Carlo Simulation}
+\author{Muhammad Zeeshan}
+\institute{Department of Physics\\[4pt]
+           \textit{MPhil Physics}}
+\date{\today}
+
+%===============================================================
+\begin{document}
+%===============================================================
+
+%---------------------------------------------------------------
+% Title Slide
+%---------------------------------------------------------------
+\maketitle
+
+%---------------------------------------------------------------
+% Outline
+%---------------------------------------------------------------
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+%===============================================================
+\section{Introduction \& Motivation}
+%===============================================================
+
+\begin{frame}{The Standard Model \& Strange Quarks}
+
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item The \textbf{Standard Model} predicts that at extreme temperatures and energy densities, nuclear matter undergoes a phase transition to a \alert{Quark-Gluon Plasma (QGP)}
+        \item Ultra-relativistic heavy-ion collisions at the LHC recreate these conditions
+        \item \textbf{Strange quarks} ($s$) are absent in the initial-state nucleons — they must be \alert{produced dynamically}
+        \item \textbf{Strangeness enhancement} relative to pp collisions is a key QGP signature
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{block}{Phase Transition}
+        \centering
+        \vspace{0.3cm}
+        $T_c \approx 155 \ \mathrm{MeV}$ \\[5pt]
+        $\varepsilon_c \approx 1 \ \mathrm{GeV/fm^3}$ \\[5pt]
+        \small (Critical temperature \& energy density for QGP formation)
+        \vspace{0.3cm}
+      \end{block}
+      \vspace{0.3cm}
+      \begin{alertblock}{Key Question}
+        \small How does strange particle production vary with collision centrality and particle species?
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Strange Particles as QGP Probes}
+
+  \begin{columns}
+    \begin{column}{0.50\textwidth}
+      \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{lccc}
+          \toprule
+          \textbf{Particle} & \textbf{Quarks} & $|S|$ & \textbf{Mass (GeV/$c^2$)} \\
+          \midrule
+          $\mathrm{K^0_S}$  & $d\bar{s}, s\bar{d}$ & 1 & 0.498 \\
+          $\Lambda$          & $uds$                & 1 & 1.116 \\
+          $\Xi^-$            & $dss$                & 2 & 1.322 \\
+          \bottomrule
+        \end{tabular}
+        \caption{Strange particles studied in this work}
+      \end{table}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{itemize}
+        \item $\mathrm{K^0_S}$: lightest strange meson, reconstructed via $\pi^+\pi^-$ decay
+        \item $\Lambda$: lightest strange baryon, via $p\pi^-$ decay
+        \item $\Xi^-$: \textbf{multi-strange} baryon ($|S|=2$), most sensitive QGP probe
+        \item Multi-strange baryons show \alert{strongest enhancement} in central collisions
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Physics Observables}
+
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \metroset{block=fill}
+      \begin{block}{Transverse Momentum Spectra}
+        $\frac{1}{2\pi p_T}\frac{d^2N}{dp_T\,dy}$\\
+        \small Probes particle production dynamics and thermal properties
+      \end{block}
+      \vspace{0.3cm}
+      \begin{block}{Mean $\langle p_T \rangle$ vs Centrality}
+        Centrality dependence of average transverse momentum\\
+        \small Sensitive to \textbf{radial flow} from hydrodynamic expansion
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Pseudorapidity Distributions}
+        $\langle dN_\mathrm{ch}/d\eta \rangle$\\
+        \small Characterises longitudinal particle production profile
+      \end{block}
+      \vspace{0.3cm}
+      \begin{block}{$\langle p_T \rangle$ vs Particle Mass}
+        Linear mass ordering of $\langle p_T \rangle$\\
+        \small Direct signature of \textbf{collective radial flow}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%===============================================================
+\section{Simulation Setup}
+%===============================================================
+
+\begin{frame}{PYTHIA8 Monte Carlo Generator}
+
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{PYTHIA8}: state-of-the-art general-purpose Monte Carlo event generator
+        \item Based on \textbf{perturbative QCD} (pQCD) for hard scatterings
+        \item Models:
+          \begin{itemize}
+            \item Multiple Parton Interactions (MPI)
+            \item Colour reconnection
+            \item String fragmentation (Lund model)
+            \item Initial \& final state radiation
+          \end{itemize}
+        \item Provides an important \alert{pQCD baseline} without QGP effects
+        \item \textbf{Analysis tool}: CERN ROOT framework
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{table}
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabular}{ll}
+          \toprule
+          \textbf{Parameter} & \textbf{Value} \\
+          \midrule
+          System       & Pb-Pb \\
+          $\sqrt{s_\mathrm{NN}}$ & 5.02 TeV \\
+          Rapidity cut & $|y| < 0.5$ \\
+          Centrality   & 0--80\% \\
+          Generator    & PYTHIA 8 \\
+          Analysis     & ROOT 6.x \\
+          \bottomrule
+        \end{tabular}
+        \caption{Simulation parameters}
+      \end{table}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Centrality Classes \& Particle Reconstruction}
+
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Centrality Definition}
+        Centrality is determined by charged particle multiplicity:
+        \begin{itemize}
+          \item \textbf{0--5\%}: Most central (head-on collisions)
+          \item \textbf{30--40\%}: Semi-central
+          \item \textbf{60--80\%}: Peripheral (grazing collisions)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Decay Topology Reconstruction}
+        \begin{itemize}
+          \item $\mathrm{K^0_S} \rightarrow \pi^+ + \pi^-$ \\ \small (V0 topology, $c\tau \approx 2.7$ cm)
+          \vspace{0.2cm}
+          \item $\Lambda \rightarrow p + \pi^-$ \\ \small (V0 topology, $c\tau \approx 7.9$ cm)
+          \vspace{0.2cm}
+          \item $\Xi^- \rightarrow \Lambda + \pi^-$ \\ \small (Cascade topology)
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%===============================================================
+\section{Results}
+%===============================================================
+
+\begin{frame}{Result 1: Pseudorapidity Distributions}
+
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{pseudorapidity_distribution.png}
+        \caption{$\langle dN_\mathrm{ch}/d\eta \rangle$ vs $\eta$ for three centrality classes}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}
+        \item Bell-shaped distribution centered at $\eta = 0$, as expected
+        \item \textcolor{red}{\textbf{0--5\%}} (central): highest multiplicity $\sim$2000
+        \item \textcolor{blue}{\textbf{30--40\%}}: intermediate yields
+        \item \textcolor{green!60!black}{\textbf{60--80\%}} (peripheral): lowest multiplicity
+        \item Clear \alert{centrality ordering} reflects increasing nuclear overlap
+        \item Consistent with participant nucleon scaling
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Result 2: Lorentz-Invariant $p_T$ Spectra}
+
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{pt_spectra_invariant.png}
+        \caption{Invariant $p_T$ spectra for $\mathrm{K^0_S}$, $\Lambda+\bar{\Lambda}$, $\Xi^-+\bar{\Xi}^+$}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}
+        \item Spectra shown for \textbf{0--5\%} ($\times$20) and \textbf{30--40\%}
+        \item Yields span \alert{several orders of magnitude} (log scale)
+        \item Strangeness hierarchy: $\mathrm{K^0_S} > \Lambda > \Xi$ across all $p_T$
+        \item Higher strange quark content $\Rightarrow$ lower production rate
+        \item $\times$20 scaling separates centrality classes visually
+        \item Spectra soften from central to semi-central collisions
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Result 3: Mean $\langle p_T \rangle$ vs Centrality}
+
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{mean_pt_vs_centrality.png}
+        \caption{$\langle p_T \rangle$ vs centrality for $\mathrm{K^0_S}$, $\Lambda+\bar{\Lambda}$, $\Xi^-+\bar{\Xi}^+$}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}
+        \item \textbf{Mass ordering} clearly observed:
+          \[ \langle p_T \rangle_\Xi > \langle p_T \rangle_\Lambda > \langle p_T \rangle_{\mathrm{K^0_S}} \]
+        \item Heavier particles receive larger momentum boost from \alert{collective radial flow}
+        \item Mild \textbf{decrease} from central to peripheral: less radial flow in peripheral events
+        \item Consistent with hydrodynamic picture of the fireball expansion
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Result 4: $\langle p_T \rangle$ vs Particle Mass — Radial Flow Signature}
+
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{mean_pt_vs_mass_radialflow.png}
+        \caption{$\langle p_T \rangle$ vs rest mass $m$ for strange hadrons}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}
+        \item \alert{Linear rise} of $\langle p_T \rangle$ with particle mass $m$
+        \item Direct signature of \textbf{collective radial flow}:
+          \[ \langle p_T \rangle \approx m \langle \beta_T \rangle \]
+          where $\langle \beta_T \rangle$ is the mean transverse flow velocity
+        \item All particles share a \textbf{common velocity boost} from the expanding fireball
+        \item Heavier species (Ξ) acquire proportionally \alert{larger momenta}
+        \item PYTHIA8 results (colored circles) compared with reference dataset (grey triangles)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%===============================================================
+\section{Summary \& Conclusion}
+%===============================================================
+
+\begin{frame}{Summary of Results}
+
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \metroset{block=fill}
+      \begin{block}{Key Findings}
+        \begin{enumerate}
+          \item \textbf{Pseudorapidity}: Bell-shaped $dN_\mathrm{ch}/d\eta$, strong centrality ordering confirmed
+          \item \textbf{$p_T$ Spectra}: Strangeness hierarchy $\mathrm{K^0_S} > \Lambda > \Xi$ across all $p_T$
+          \item \textbf{$\langle p_T \rangle$ vs Centrality}: Mass ordering consistent with radial flow; decreases toward peripheral
+          \item \textbf{$\langle p_T \rangle$ vs Mass}: Linear rise — direct evidence of collective radial flow
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Physics Interpretation}
+        \begin{itemize}
+          \item PYTHIA8 successfully reproduces qualitative trends of strange particle production
+          \item Radial flow signatures are clearly present even in the Monte Carlo baseline
+          \item Multi-strange baryons (Ξ) are confirmed as the most sensitive probes of collision dynamics
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{Conclusions \& Outlook}
+
+  \begin{itemize}
+    \item[$\checkmark$] Successfully simulated \textbf{Pb-Pb collisions at $\sqrt{s_\mathrm{NN}} = 5.02$ TeV} using PYTHIA8
+    \item[$\checkmark$] Characterised $\mathrm{K^0_S}$, $\Lambda$, and $\Xi$ production across multiple centrality classes
+    \item[$\checkmark$] Observed \textbf{strangeness hierarchy}, \textbf{centrality scaling}, and \textbf{radial flow signatures}
+    \item[$\checkmark$] Established a \textbf{pQCD Monte Carlo baseline} for comparison with ALICE experimental data
+  \end{itemize}
+
+  \vspace{0.5cm}
+
+  \begin{block}{Future Directions}
+    \begin{itemize}
+      \item Direct comparison with \textbf{ALICE experimental data} at 5.02 TeV
+      \item Extend analysis to include $\Omega^-$ (triple-strange baryon, $|S|=3$)
+      \item Blast-wave fits to extract \textbf{kinetic freeze-out temperature} $T_\mathrm{kin}$ and $\langle \beta_T \rangle$
+      \item Study \textbf{strangeness enhancement ratios} (e.g. $\Xi/\mathrm{K^0_S}$) as a function of multiplicity
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------
+\begin{frame}{References}
+
+  \begin{thebibliography}{9}
+    \small
+    \bibitem{pythia8}
+      T.~Sjöstrand \textit{et al.},
+      \textit{An introduction to PYTHIA 8.2},
+      Comput.\ Phys.\ Commun.\ \textbf{191} (2015) 159--177.
+
+    \bibitem{alice_strangeness}
+      ALICE Collaboration,
+      \textit{Enhanced production of multi-strange hadrons in high-multiplicity proton-proton collisions},
+      Nature Physics \textbf{13} (2017) 535--542.
+
+    \bibitem{alice_pbpb}
+      ALICE Collaboration,
+      \textit{Multiplicity dependence of (multi-)strange hadron production in p-Pb collisions},
+      Eur.\ Phys.\ J.\ C \textbf{80} (2020) 167.
+
+    \bibitem{root}
+      R.~Brun and F.~Rademakers,
+      \textit{ROOT — An object oriented data analysis framework},
+      Nucl.\ Instrum.\ Meth.\ A \textbf{389} (1997) 81--86.
+  \end{thebibliography}
+
+\end{frame}
+
+%---------------------------------------------------------------
+% Thank You Slide
+%---------------------------------------------------------------
+{
+\setbeamercolor{background canvas}{bg=aliceblue}
+\begin{frame}[standout]
+  \Huge \textcolor{white}{Thank You}\\[0.5cm]
+  \large \textcolor{white!80!aliceblue}{Questions \& Discussion}
+\end{frame}
+}
+
+%===============================================================
+\end{document}
+%===============================================================
